@@ -26,6 +26,8 @@
         <mybatis.plus.version>3.5.15</mybatis.plus.version>
         <!-- Redisson 版本 -->
         <redisson.version>3.38.1</redisson.version>
+        <!-- Lombok 版本（日志注解与样板代码生成） -->
+        <lombok.version>1.18.42</lombok.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- 让编译插件直接使用统一的 Java release -->
         <maven.compiler.release>${java.version}</maven.compiler.release>
@@ -62,6 +64,16 @@
                     <configuration>
                         <!-- 保留方法参数名，避免 @PathVariable/@RequestParam 依赖反射名时解析失败 -->
                         <parameters>true</parameters>
+                        <!-- JDK 23+ 默认不再自动开启注解处理，显式开启以支持 Lombok -->
+                        <proc>full</proc>
+                        <!-- 显式声明 Lombok 注解处理器，保证本地与 CI 行为一致 -->
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>${lombok.version}</version>
+                            </path>
+                        </annotationProcessorPaths>
                         <release>${maven.compiler.release}</release>
                     </configuration>
                 </plugin>
