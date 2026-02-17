@@ -1,0 +1,16 @@
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration
+      - org.springframework.boot.flyway.autoconfigure.FlywayAutoConfiguration
+      - org.redisson.spring.starter.RedissonAutoConfigurationV2
+  data:
+    redis:
+      host: localhost
+      port: 8082
+      timeout: 2s
+  rabbitmq:
+    host: localhost
+    port: 8083
+    username: guest
+    password: guest

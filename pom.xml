@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.github.seckill-lab</groupId>
+    <artifactId>seckill-lab-parent</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>seckill-lab-parent</name>
+    <description>Progressive ecommerce seckill teaching project</description>
+
+    <!-- 聚合父工程：统一管理模块、版本与插件，不直接产出可运行制品 -->
+    <modules>
+        <module>seckill-app</module>
+    </modules>
+
+    <!-- 统一版本入口：子模块尽量复用这里的版本，避免重复声明 -->
+    <properties>
+        <!-- 课程运行基线：JDK 25 -->
+        <java.version>25</java.version>
+        <!-- Spring Boot 主版本（与文档保持一致） -->
+        <spring.boot.version>4.0.2</spring.boot.version>
+        <!-- MyBatis-Plus 版本 -->
+        <mybatis.plus.version>3.5.15</mybatis.plus.version>
+        <!-- Redisson 版本 -->
+        <redisson.version>3.38.1</redisson.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- 让编译插件直接使用统一的 Java release -->
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+    </properties>
+
+    <!-- 依赖版本管理：导入 Spring Boot BOM，子模块可省略大量版本号 -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- 插件版本管理：定义默认版本与通用配置，执行由子模块决定 -->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!-- Spring Boot 打包/运行插件 -->
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring.boot.version}</version>
+                </plugin>
+                <!-- Java 编译插件：release 与 java.version 对齐 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.13.0</version>
+                    <configuration>
+                        <!-- 保留方法参数名，避免 @PathVariable/@RequestParam 依赖反射名时解析失败 -->
+                        <parameters>true</parameters>
+                        <release>${maven.compiler.release}</release>
+                    </configuration>
+                </plugin>
+                <!-- 单元测试执行插件 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.2.5</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>

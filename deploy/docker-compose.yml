@@ -1,0 +1,43 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: seckill-mysql
+    restart: unless-stopped
+    environment:
+      # root 账户
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: seckill_lab
+      MYSQL_USER: seckill
+      MYSQL_PASSWORD: seckill
+    ports:
+      # 宿主机 8081 -> 容器 3306（避免占用本机默认 MySQL 端口）
+      - "8081:3306"
+    command: ["--default-authentication-plugin=mysql_native_password"]
+    # 健康检查用于判断数据库是否可接受连接
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # Redis：用于缓存与库存热点路径演示（v2+）
+  redis:
+    image: redis:7.2
+    container_name: seckill-redis
+    restart: unless-stopped
+    ports:
+      # 宿主机 8082 -> 容器 6379（避免占用本机默认 Redis 端口）
+      - "8082:6379"
+    # 开启 AOF，便于本地观察数据持久化行为
+    command: ["redis-server", "--appendonly", "yes"]
+
+  # RabbitMQ：用于异步下单与削峰填谷演示（v3+）
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: seckill-rabbitmq
+    restart: unless-stopped
+    ports:
+      # 宿主机 8083 -> 容器 5672（AMQP 协议端口，应用连接）
+      - "8083:5672"
+      # 宿主机 8084 -> 容器 15672（管理控制台，默认 guest/guest）
+      - "8084:15672"
