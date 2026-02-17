@@ -6,14 +6,13 @@ Seckill Lab 是一个面向初学者的电商秒杀教学仓库。项目从一�
 
 当前基线版本：Spring Boot 4.0.x + Java 25。
 
-## 为什么选秒杀做教学场景
+## 为什么还要做秒杀教学项目
 
-秒杀把分布式系统中最关键的难点集中到了一个相对简单的业务流程中：
+秒杀题材看起来“烂大街”，但它长期高频出现并不是因为简单，而是因为它把高并发系统里最关键的一组矛盾集中在了一个可观察的业务里：短时流量冲击和强一致性要求同时存在。电商秒杀、抢券、预约、配额分配场景虽然名字不同，本质都是有限资源竞争，因此超卖、重复下单、请求堆积、削峰和幂等这些问题会非常直观地暴露出来。
 
-- 流量瞬时爆发，系统瓶颈更容易暴露。
-- 库存正确性要求高，超卖和重复下单问题非常直观。
-- 业务规则不复杂，适合循序渐进教学。
-- 每次优化都可以通过压测和指标做清晰对比。
+真正有挑战的不是“找到一个能跑的秒杀项目”，而是建立完整的工程判断力。很多教程会直接给 Redis、MQ、分布式锁等标准答案，代码能运行，却缺少关键上下文：为什么先做这一步、为什么这个改动真的有效、如何用数据证明系统变好了。结果往往是会抄方案，不会诊断问题，也很难迁移到新的业务场景。
+
+Seckill Lab 的目标就是把这段最容易被跳过的学习过程补齐：从故意有缺陷的 v0 开始，先复现问题，再逐步改造，并要求每一步都有压测与指标作为证据。这样学完之后，得到的不只是某个场景的实现代码，而是一套可迁移的方法：先识别正确性风险，再做渐进式改造，最后用可验证结果证明改造价值。
 
 ## 快速开始
 
@@ -36,6 +35,8 @@ docker compose -f deploy/docker-compose.yml up -d
 - Redis：`8082 -> 6379`
 - RabbitMQ AMQP：`8083 -> 5672`
 - RabbitMQ 管理台：`8084 -> 15672`
+
+启动完成后可访问 RabbitMQ 管理台：`http://localhost:8084`（默认 `guest/guest`）。
 
 ### 2）再用 IDEA 启动应用（默认 v0）
 
@@ -74,6 +75,12 @@ bash scripts/v0-burst.sh 1001 300 60
 - `oversoldUnits`：可能大于 `0`（表示出现超卖）
 - `duplicateUserCount`：可能大于 `0`（表示出现重复下单）
 
+实验结束后可停止中间件：
+
+```bash
+docker compose -f deploy/docker-compose.yml down
+```
+
 ## 建议学习路径
 
 1. 先看文档导航：[docs/README.md](./docs/README.md)
@@ -106,15 +113,15 @@ seckill-lab/
 
 | 阶段 | 名称 | 重点 | 状态 |
 |---|---|---|---|
-| v0 | Naive Sync Order | 复现超卖与重复下单 | Available |
-| v1 | DB Guard | 唯一约束 + 乐观锁 | Planned |
-| v2 | Redis Stock | Redis 热点库存 + Lua 原子扣减 | Planned |
-| v3 | Async Order | MQ 异步下单、削峰填谷 | Planned |
-| v4 | Idempotency | 请求与消费幂等去重 | Planned |
-| v5 | Compensation | 超时关单与库存回补 | Planned |
-| v6 | Anti Bot | 防刷风控与限流策略 | Planned |
-| v7 | Observability | 指标、链路追踪与看板 | Planned |
-| v8 | Scale Out | 可选微服务拆分演示 | Planned |
+| v0 | Naive Sync Order | 复现超卖与重复下单 | 可用 |
+| v1 | DB Guard | 唯一约束 + 乐观锁 | 规划中 |
+| v2 | Redis Stock | Redis 热点库存 + Lua 原子扣减 | 规划中 |
+| v3 | Async Order | MQ 异步下单、削峰填谷 | 规划中 |
+| v4 | Idempotency | 请求与消费幂等去重 | 规划中 |
+| v5 | Compensation | 超时关单与库存回补 | 规划中 |
+| v6 | Anti Bot | 防刷风控与限流策略 | 规划中 |
+| v7 | Observability | 指标、链路追踪与看板 | 规划中 |
+| v8 | Scale Out | 可选微服务拆分演示 | 规划中 |
 
 ## 当前 v0 接口
 
@@ -129,12 +136,13 @@ seckill-lab/
 - 默认 profile 为 `v0`（排除 DB/Flyway 自动装配）
 - `GET /api/stages/current` 会根据当前 `active/default profile` 返回当前阶段
 - 开始体验 `v1`（DB 版）时，在 IDEA Run Configuration 中设置 `Active profiles = v1`
+- `v1` 无需手工建表：应用启动时会由 Flyway 自动执行 `seckill-app/src/main/resources/db/migration/V1__init_schema.sql`
 
 ## 常见问题
 
-- Java 不是 25：先切换 `JAVA_HOME`
 - 端口冲突（8081/8082/8083/8084）：关闭本机同端口服务后重试
 - Docker 未启动：先启动 Docker Desktop 或 Docker 服务
+- IDEA 报 `log` 相关编译错误：启用 Annotation Processing（`Settings -> Build, Execution, Deployment -> Compiler -> Annotation Processors`）
 
 ## 下一步
 
