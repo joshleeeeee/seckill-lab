@@ -1,9 +1,21 @@
 spring:
+  autoconfigure:
+    exclude:
+      - org.redisson.spring.starter.RedissonAutoConfigurationV2
   datasource:
     url: jdbc:mysql://localhost:8081/seckill_lab?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
     username: seckill
     password: seckill
     driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: localhost
+      port: 8082
+  rabbitmq:
+    host: localhost
+    port: 8083
+    username: guest
+    password: guest
   flyway:
     enabled: true
     locations: classpath:db/migration

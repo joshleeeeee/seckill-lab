@@ -75,6 +75,12 @@ bash scripts/v0-burst.sh 1001 300 60
 - `oversoldUnits`：可能大于 `0`（表示出现超卖）
 - `duplicateUserCount`：可能大于 `0`（表示出现重复下单）
 
+如需验证 `v1`（先在 IDEA 切到 `v1` profile）：
+
+```bash
+bash scripts/v1-burst.sh 1001 300 60
+```
+
 实验结束后可停止中间件：
 
 ```bash
@@ -87,7 +93,7 @@ docker compose -f deploy/docker-compose.yml down
 2. 先补基础：[docs/fundamentals/prerequisites.md](./docs/fundamentals/prerequisites.md)
 3. 再看概念：[docs/fundamentals/core-concepts.md](./docs/fundamentals/core-concepts.md)
 4. 阅读并完成 v0：[docs/chapters/v0-naive.md](./docs/chapters/v0-naive.md)
-5. 稳定复现后再进入 `v1`
+5. 阅读并完成 v1：[docs/chapters/v1-db-guard.md](./docs/chapters/v1-db-guard.md)
 
 ## 仓库结构
 
@@ -114,7 +120,7 @@ seckill-lab/
 | 阶段 | 名称 | 重点 | 状态 |
 |---|---|---|---|
 | v0 | Naive Sync Order | 复现超卖与重复下单 | 可用 |
-| v1 | DB Guard | 唯一约束 + 乐观锁 | 规划中 |
+| v1 | DB Guard | 唯一约束 + 乐观锁 | 可用 |
 | v2 | Redis Stock | Redis 热点库存 + Lua 原子扣减 | 规划中 |
 | v3 | Async Order | MQ 异步下单、削峰填谷 | 规划中 |
 | v4 | Idempotency | 请求与消费幂等去重 | 规划中 |
@@ -123,11 +129,14 @@ seckill-lab/
 | v7 | Observability | 指标、链路追踪与看板 | 规划中 |
 | v8 | Scale Out | 可选微服务拆分演示 | 规划中 |
 
-## 当前 v0 接口
+## 当前接口
 
 - `POST /api/v0/activities/{activityId}/reset?stock=50`
 - `POST /api/v0/activities/{activityId}/attempt`
 - `GET /api/v0/activities/{activityId}/snapshot`
+- `POST /api/v1/activities/{activityId}/reset?stock=50`
+- `POST /api/v1/activities/{activityId}/attempt`
+- `GET /api/v1/activities/{activityId}/snapshot`
 - `GET /api/stages`
 - `GET /api/stages/current`
 
@@ -146,4 +155,4 @@ seckill-lab/
 
 ## 下一步
 
-实现 `v1`：基于 MySQL 的一人一单唯一约束 + 库存乐观锁扣减。
+继续完善 `v1` 并进入 `v2`：引入 Redis 热点库存与 Lua 原子扣减。

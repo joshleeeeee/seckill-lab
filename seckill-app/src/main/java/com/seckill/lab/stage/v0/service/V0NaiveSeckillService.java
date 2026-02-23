@@ -3,6 +3,7 @@ package com.seckill.lab.stage.v0.service;
 import com.seckill.lab.stage.v0.model.V0AttemptResult;
 import com.seckill.lab.stage.v0.model.V0Snapshot;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
  * <p>该服务故意保留竞态窗口和重复下单行为，便于教学中稳定复现并发问题。
  */
 @Service
+@Profile("v0")
 @Slf4j
 public class V0NaiveSeckillService {
 

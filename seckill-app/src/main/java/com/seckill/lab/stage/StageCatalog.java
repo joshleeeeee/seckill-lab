@@ -15,7 +15,7 @@ public class StageCatalog {
 
     private final List<StageInfo> stages = List.of(
             new StageInfo("v0", "Naive Sync Order", "Reproduce oversell and duplicate orders", StageStatus.AVAILABLE),
-            new StageInfo("v1", "DB Guard", "Add optimistic lock and one-user-one-order", StageStatus.PLANNED),
+            new StageInfo("v1", "DB Guard", "Add optimistic lock and one-user-one-order", StageStatus.AVAILABLE),
             new StageInfo("v2", "Redis Stock", "Move hot stock to Redis with Lua", StageStatus.PLANNED),
             new StageInfo("v3", "Async Order", "Use message queue to buffer spikes", StageStatus.PLANNED),
             new StageInfo("v4", "Idempotency", "Deduplicate retries and repeated messages", StageStatus.PLANNED),

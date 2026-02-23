@@ -5,7 +5,7 @@ spring:
   application:
     name: seckill-lab
   profiles:
-    default: v0
+    default: v1
 
 management:
   endpoints:

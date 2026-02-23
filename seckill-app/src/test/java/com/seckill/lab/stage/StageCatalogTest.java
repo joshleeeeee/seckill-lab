@@ -42,4 +42,17 @@ class StageCatalogTest {
 
         assertThat(stageCatalog.current().code()).isEqualTo("v0");
     }
+
+    @Test
+    void marksV1AsAvailable() {
+        MockEnvironment environment = new MockEnvironment();
+        StageCatalog stageCatalog = new StageCatalog(environment);
+
+        StageInfo v1 = stageCatalog.all().stream()
+                .filter(stage -> stage.code().equals("v1"))
+                .findFirst()
+                .orElseThrow();
+
+        assertThat(v1.status()).isEqualTo(StageStatus.AVAILABLE);
+    }
 }

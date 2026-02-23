@@ -8,6 +8,7 @@ import com.seckill.lab.stage.v0.service.V0NaiveSeckillService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import org.springframework.context.annotation.Profile;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Validated
 @RestController
+@Profile("v0")
 @RequestMapping("/api/v0/activities")
 public class V0SeckillController {
 

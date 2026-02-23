@@ -42,8 +42,8 @@
 2. [核心概念讲解](./fundamentals/core-concepts.md)
 3. [演进路线图](./architecture/evolution-map.md)
 4. [v0 - 朴素同步秒杀](./chapters/v0-naive.md)
-5. 写一段总结：问题是什么、为什么会发生
-6. 能稳定复现 v0 后，再进入 v1
+5. [v1 - DB 正确性兜底](./chapters/v1-db-guard.md)
+6. 写一段总结：v0 为什么错、v1 为什么更稳
 
 ## 每章学习证据清单
 
@@ -61,3 +61,4 @@
   - [演进路线图](./architecture/evolution-map.md)
 - 章节
   - [v0 - 朴素同步秒杀](./chapters/v0-naive.md)
+  - [v1 - DB 正确性兜底](./chapters/v1-db-guard.md)
