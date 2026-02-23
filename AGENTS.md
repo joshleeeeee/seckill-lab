@@ -54,7 +54,7 @@ mvn -pl seckill-app -Dtest=SeckillLabApplicationTests test
 ```
 ### 3.4 v0 demo helper
 ```bash
-bash scripts/v0-burst.sh 1001 300 60
+bash scripts/burst.sh v0 1001 300 60
 ```
 
 ### 3.5 Common local issues

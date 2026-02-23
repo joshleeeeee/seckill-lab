@@ -67,7 +67,7 @@ curl -X POST "http://localhost:8080/api/v0/activities/1001/reset?stock=50"
 再打突发流量：
 
 ```bash
-bash scripts/v0-burst.sh 1001 300 60
+bash scripts/burst.sh v0 1001 300 60
 ```
 
 重点看返回中的两个字段：
@@ -78,8 +78,18 @@ bash scripts/v0-burst.sh 1001 300 60
 如需验证 `v1`（先在 IDEA 切到 `v1` profile）：
 
 ```bash
-bash scripts/v1-burst.sh 1001 300 60
+bash scripts/burst.sh v1 1001 300 60
 ```
+
+该脚本会输出“吞吐量（请求/秒）”与“延迟 P50/P95/P99”等中文统计，便于同时观察正确性和响应速度。
+
+如需验证 `v2`（先在 IDEA 切到 `v2` profile）：
+
+```bash
+bash scripts/burst.sh v2 1001 300 60
+```
+
+该脚本会输出“吞吐量（请求/秒）”与“延迟 P50/P95/P99”等中文统计，便于同时观察正确性和响应速度。
 
 实验结束后可停止中间件：
 
@@ -94,6 +104,7 @@ docker compose -f deploy/docker-compose.yml down
 3. 再看概念：[docs/fundamentals/core-concepts.md](./docs/fundamentals/core-concepts.md)
 4. 阅读并完成 v0：[docs/chapters/v0-naive.md](./docs/chapters/v0-naive.md)
 5. 阅读并完成 v1：[docs/chapters/v1-db-guard.md](./docs/chapters/v1-db-guard.md)
+6. 阅读并完成 v2：[docs/chapters/v2-redis-stock.md](./docs/chapters/v2-redis-stock.md)
 
 ## 仓库结构
 
@@ -121,7 +132,7 @@ seckill-lab/
 |---|---|---|---|
 | v0 | Naive Sync Order | 复现超卖与重复下单 | 可用 |
 | v1 | DB Guard | 唯一约束 + 乐观锁 | 可用 |
-| v2 | Redis Stock | Redis 热点库存 + Lua 原子扣减 | 规划中 |
+| v2 | Redis Stock | Redis 热点库存 + Lua 原子扣减 | 可用 |
 | v3 | Async Order | MQ 异步下单、削峰填谷 | 规划中 |
 | v4 | Idempotency | 请求与消费幂等去重 | 规划中 |
 | v5 | Compensation | 超时关单与库存回补 | 规划中 |
@@ -137,6 +148,9 @@ seckill-lab/
 - `POST /api/v1/activities/{activityId}/reset?stock=50`
 - `POST /api/v1/activities/{activityId}/attempt`
 - `GET /api/v1/activities/{activityId}/snapshot`
+- `POST /api/v2/activities/{activityId}/reset?stock=50`
+- `POST /api/v2/activities/{activityId}/attempt`
+- `GET /api/v2/activities/{activityId}/snapshot`
 - `GET /api/stages`
 - `GET /api/stages/current`
 
@@ -145,7 +159,8 @@ seckill-lab/
 - 默认 profile 为 `v0`（排除 DB/Flyway 自动装配）
 - `GET /api/stages/current` 会根据当前 `active/default profile` 返回当前阶段
 - 开始体验 `v1`（DB 版）时，在 IDEA Run Configuration 中设置 `Active profiles = v1`
-- `v1` 无需手工建表：应用启动时会由 Flyway 自动执行 `seckill-app/src/main/resources/db/migration/V1__init_schema.sql`
+- 开始体验 `v2`（Redis 库存版）时，在 IDEA Run Configuration 中设置 `Active profiles = v2`
+- `v1/v2` 无需手工建表：应用启动时会由 Flyway 自动执行 `seckill-app/src/main/resources/db/migration/V1__init_schema.sql`
 
 ## 常见问题
 
@@ -155,4 +170,4 @@ seckill-lab/
 
 ## 下一步
 
-继续完善 `v1` 并进入 `v2`：引入 Redis 热点库存与 Lua 原子扣减。
+进入 `v3`：引入 MQ 异步下单，继续提升洪峰抗压能力。

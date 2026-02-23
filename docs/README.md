@@ -43,7 +43,8 @@
 3. [演进路线图](./architecture/evolution-map.md)
 4. [v0 - 朴素同步秒杀](./chapters/v0-naive.md)
 5. [v1 - DB 正确性兜底](./chapters/v1-db-guard.md)
-6. 写一段总结：v0 为什么错、v1 为什么更稳
+6. [v2 - Redis 热点库存](./chapters/v2-redis-stock.md)
+7. 写一段总结：v0 为什么错、v1 如何兜底、v2 为什么更抗压
 
 ## 每章学习证据清单
 
@@ -62,3 +63,4 @@
 - 章节
   - [v0 - 朴素同步秒杀](./chapters/v0-naive.md)
   - [v1 - DB 正确性兜底](./chapters/v1-db-guard.md)
+  - [v2 - Redis 热点库存](./chapters/v2-redis-stock.md)
